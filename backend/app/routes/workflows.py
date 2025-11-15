@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from app.models import Workflow, WorkflowCreate
+from app.services.workflow_executor import get_workflow_executor
 from typing import List
 from datetime import datetime
 import uuid
@@ -8,6 +9,9 @@ router = APIRouter()
 
 # In-memory storage
 workflows_db: dict[str, Workflow] = {}
+
+# Import agents_db from agents route (for workflow execution)
+from app.routes.agents import agents_db
 
 @router.get("/", response_model=List[Workflow])
 async def list_workflows():
@@ -66,7 +70,7 @@ async def delete_workflow(workflow_id: str):
     return {"message": "Workflow deleted successfully"}
 
 @router.post("/{workflow_id}/execute")
-async def execute_workflow(workflow_id: str):
+async def execute_workflow(workflow_id: str, background_tasks: BackgroundTasks, initial_input: str = ""):
     """Execute a workflow"""
     if workflow_id not in workflows_db:
         raise HTTPException(status_code=404, detail="Workflow not found")
@@ -75,6 +79,24 @@ async def execute_workflow(workflow_id: str):
     workflow.status = 'active'
     workflow.updatedAt = datetime.now()
     
-    # TODO: Implement actual workflow execution logic
+    # Get workflow executor
+    executor = get_workflow_executor()
+    
+    # Execute workflow in background
+    async def run_workflow():
+        result = await executor.execute_workflow(
+            workflow=workflow,
+            agents=agents_db,
+            initial_input=initial_input or "Execute the workflow tasks."
+        )
+        
+        # Update workflow status based on result
+        if result["status"] == "completed":
+            workflow.status = 'completed'
+        else:
+            workflow.status = 'error'
+        workflow.updatedAt = datetime.now()
+    
+    background_tasks.add_task(run_workflow)
     
     return {"message": "Workflow execution started", "workflowId": workflow_id}
