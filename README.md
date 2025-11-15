@@ -88,7 +88,23 @@ agent-orchestrator/
 
 ### Running the Application
 
-**Option 1: Run as Desktop App (Recommended)**
+**Quick Start (Recommended):**
+
+**Linux/macOS:**
+```bash
+./start.sh
+```
+
+**Windows:**
+```cmd
+start.bat
+```
+
+The script will check dependencies and let you choose how to run the application.
+
+**Manual Start:**
+
+**Option 1: Run as Desktop App**
 ```bash
 npm run electron:dev
 ```
@@ -103,6 +119,11 @@ npm run dev:frontend
 ```
 
 Then open http://localhost:3000 in your browser.
+
+**Option 3: Run with Docker**
+```bash
+docker-compose up
+```
 
 ## 📖 Usage Guide
 
