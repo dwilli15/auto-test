@@ -1,0 +1,38 @@
+{
+  "name": "agent-orchestrator",
+  "version": "0.1.0",
+  "description": "No-code local OS agent orchestration GUI for creating, managing, and coordinating autonomous agent teams",
+  "main": "frontend/electron/main.js",
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && pip install -r requirements.txt",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:frontend",
+    "electron:dev": "cd frontend && npm run electron:dev",
+    "electron:build": "cd frontend && npm run electron:build",
+    "package": "npm run build && npm run electron:build",
+    "test": "cd frontend && npm test && cd ../backend && pytest",
+    "lint": "cd frontend && npm run lint"
+  },
+  "keywords": [
+    "agent",
+    "orchestration",
+    "ai",
+    "llm",
+    "automation",
+    "no-code",
+    "workflow",
+    "local-ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dwilli15/auto-test"
+  }
+}

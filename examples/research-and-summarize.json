@@ -1,0 +1,62 @@
+{
+  "name": "Research and Summarize",
+  "description": "A simple workflow that researches a topic and creates a summary",
+  "version": "1.0.0",
+  "agents": [
+    {
+      "id": "researcher-1",
+      "name": "Research Agent",
+      "role": "Researcher",
+      "description": "Gathers comprehensive information on the given topic",
+      "llmProvider": "ollama",
+      "modelName": "llama2",
+      "systemPrompt": "You are a thorough researcher. Gather comprehensive, factual information on the topic provided. Focus on accuracy and include multiple perspectives.",
+      "temperature": 0.5,
+      "maxTokens": 2000
+    },
+    {
+      "id": "summarizer-1",
+      "name": "Summary Agent",
+      "role": "Summarizer",
+      "description": "Creates concise summaries of research findings",
+      "llmProvider": "ollama",
+      "modelName": "llama2",
+      "systemPrompt": "You are an expert summarizer. Take the research provided and create a clear, concise summary highlighting the key points.",
+      "temperature": 0.3,
+      "maxTokens": 1000
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      {
+        "id": "start",
+        "type": "input",
+        "position": { "x": 100, "y": 100 },
+        "data": { "label": "Start: Input Topic" }
+      },
+      {
+        "id": "researcher",
+        "type": "agent",
+        "position": { "x": 300, "y": 100 },
+        "data": { "label": "Research Agent", "agentId": "researcher-1" }
+      },
+      {
+        "id": "summarizer",
+        "type": "agent",
+        "position": { "x": 500, "y": 100 },
+        "data": { "label": "Summary Agent", "agentId": "summarizer-1" }
+      },
+      {
+        "id": "end",
+        "type": "output",
+        "position": { "x": 700, "y": 100 },
+        "data": { "label": "End: Output Summary" }
+      }
+    ],
+    "edges": [
+      { "id": "e1", "source": "start", "target": "researcher", "label": "Topic" },
+      { "id": "e2", "source": "researcher", "target": "summarizer", "label": "Research" },
+      { "id": "e3", "source": "summarizer", "target": "end", "label": "Summary" }
+    ]
+  }
+}
